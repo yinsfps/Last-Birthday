@@ -7,7 +7,7 @@ const codeInput = document.getElementById("code");
 const nameInput = document.getElementById("name");
 const confirmBtn = document.getElementById("confirmBtn");
 
-const validCodes = ['ASBX', 'YINSS', 'NOTU']; // Add your actual codes here
+const validCodes = ['asbx', 'yinss', 'notu']; // Add your actual codes here
 
 populateUI();
 
@@ -70,7 +70,7 @@ container.addEventListener("click", e => {
 });
 
 confirmBtn.addEventListener("click", () => {
-  const enteredCode = codeInput.value.toUpperCase();
+  const enteredCode = codeInput.value.trim().toUpperCase(); // Trim and convert to uppercase
   const enteredName = nameInput.value;
 
   if (validCodes.includes(enteredCode)) {
@@ -89,3 +89,4 @@ confirmBtn.addEventListener("click", () => {
     alert('Invalid code. Please enter a valid code.');
   }
 });
+
