@@ -7,7 +7,7 @@ const codeInput = document.getElementById("code");
 const nameInput = document.getElementById("name");
 const confirmBtn = document.getElementById("confirmBtn");
 
-const validCodes = ['CODE1', 'CODE2', 'CODE3']; // Add your actual codes here
+const validCodes = ['asbx', 'yinss', 'notu']; // Add your actual codes here
 
 populateUI();
 
