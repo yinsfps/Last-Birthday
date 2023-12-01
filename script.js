@@ -7,7 +7,7 @@ const codeInput = document.getElementById("code");
 const nameInput = document.getElementById("name");
 const confirmBtn = document.getElementById("confirmBtn");
 
-const validCodes = ['asddd', 'yis', 'nos']; // Add your actual codes here
+const validCodes = ['asbx', 'yinss', 'notu']; // Add your actual codes here
 
 populateUI();
 
@@ -45,9 +45,9 @@ function populateUI() {
 }
 
 function markCodeAsUsed(enteredCode) {
-  const enteredCodeIndex = validCodes.indexOf(enteredCode);
-  if (enteredCodeIndex !== -1) {
-    validCodes.splice(enteredCodeIndex, 1); // Remove the used code
+  const index = validCodes.indexOf(enteredCode);
+  if (index !== -1) {
+    validCodes.splice(index, 1); // Remove the used code
   }
 }
 
@@ -58,7 +58,6 @@ function isCodeValid(enteredCode) {
 movieSelect.addEventListener("change", e => {
   ticketPrice = +e.target.value;
   setMovieData(e.target.selectedIndex, e.target.value);
-
   updateSelectedCount();
 });
 
@@ -68,17 +67,15 @@ container.addEventListener("click", e => {
     !e.target.classList.contains("occupied")
   ) {
     e.target.classList.toggle("selected");
-
     updateSelectedCount();
   }
 });
 
 confirmBtn.addEventListener("click", () => {
   const enteredCode = codeInput.value.toLowerCase();
-  const enteredName = nameInput.value;
+  const enteredName = nameInput.value.trim();
 
-  if (isCodeValid(enteredCode)) {
-    // Code is valid, proceed with seat selection logic
+  if (isCodeValid(enteredCode) && enteredName) {
     const selectedSeats = document.querySelectorAll(".row .seat.selected");
     selectedSeats.forEach(seat => {
       seat.classList.remove("selected");
@@ -90,7 +87,6 @@ confirmBtn.addEventListener("click", () => {
     updateSelectedCount();
     alert('Ticket confirmed!');
   } else {
-    alert('Invalid code. Please enter a valid code.');
+    alert('Invalid code or empty name. Please enter a valid code and name.');
   }
 });
-
