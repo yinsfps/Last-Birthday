@@ -70,10 +70,10 @@ container.addEventListener("click", e => {
 });
 
 confirmBtn.addEventListener("click", () => {
-  const enteredCode = codeInput.value.trim().toUpperCase(); // Trim and convert to uppercase
+  const enteredCode = codeInput.value.trim().toUpperCase();
   const enteredName = nameInput.value;
 
-  if (validCodes.includes(enteredCode)) {
+  if (validCodes.some(code => code.toUpperCase() === enteredCode)) {
     // Code is valid, proceed with seat selection logic
     const selectedSeats = document.querySelectorAll(".row .seat.selected");
     selectedSeats.forEach(seat => {
@@ -90,3 +90,4 @@ confirmBtn.addEventListener("click", () => {
   }
 });
 
+updateSelectedCount();
