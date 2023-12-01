@@ -8,6 +8,7 @@ const nameInput = document.getElementById("name");
 const confirmBtn = document.getElementById("confirmBtn");
 
 const validCodes = ['asbx', 'yinss', 'notu']; // Add your actual codes here
+const usedCodesMap = new Map(); // Map to track used codes and associated names
 
 populateUI();
 
@@ -44,11 +45,8 @@ function populateUI() {
   }
 }
 
-function markCodeAsUsed(enteredCode) {
-  const enteredCodeIndex = validCodes.indexOf(enteredCode);
-  if (enteredCodeIndex !== -1) {
-    validCodes.splice(enteredCodeIndex, 1); // Remove the used code
-  }
+function markCodeAsUsed(enteredCode, enteredName) {
+  usedCodesMap.set(enteredCode, enteredName);
 }
 
 movieSelect.addEventListener("change", e => {
@@ -70,21 +68,26 @@ container.addEventListener("click", e => {
 });
 
 confirmBtn.addEventListener("click", () => {
-  const enteredCode = codeInput.value.trim().toUpperCase();
+  const enteredCode = codeInput.value.trim().toLowerCase();
   const enteredName = nameInput.value;
 
-  if (validCodes.map(code => code.toUpperCase()).includes(enteredCode)) {
-    // Code is valid, proceed with seat selection logic
-    const selectedSeats = document.querySelectorAll(".row .seat.selected");
-    selectedSeats.forEach(seat => {
-      seat.classList.remove("selected");
-      seat.classList.add("occupied");
-      seat.innerHTML = `<div class="tooltip">${enteredName}</div>`;
-    });
+  if (validCodes.includes(enteredCode)) {
+    // Code is valid
+    if (!usedCodesMap.has(enteredCode)) {
+      // Code has not been used before
+      const selectedSeats = document.querySelectorAll(".row .seat.selected");
+      selectedSeats.forEach(seat => {
+        seat.classList.remove("selected");
+        seat.classList.add("occupied");
+        seat.innerHTML = `<div class="tooltip">${enteredName}</div>`;
+      });
 
-    markCodeAsUsed(enteredCode);
-    updateSelectedCount();
-    alert('Ticket confirmed!');
+      markCodeAsUsed(enteredCode, enteredName);
+      updateSelectedCount();
+      alert('Ticket confirmed!');
+    } else {
+      alert('This code has already been used. Please enter a new code.');
+    }
   } else {
     alert('Invalid code. Please enter a valid code.');
   }
