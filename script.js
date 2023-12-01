@@ -95,6 +95,7 @@ confirmBtn.addEventListener("click", () => {
   } else {
     alert('Invalid code. Please enter a valid code.');
   }
+  codeInput.value = ''; // Clear the code input after confirmation
 });
 
 updateSelectedCount();
