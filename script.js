@@ -73,7 +73,7 @@ confirmBtn.addEventListener("click", () => {
   const enteredCode = codeInput.value.trim().toUpperCase();
   const enteredName = nameInput.value;
 
-  if (validCodes.some(code => code.toUpperCase() === enteredCode)) {
+  if (validCodes.map(code => code.toUpperCase()).includes(enteredCode)) {
     // Code is valid, proceed with seat selection logic
     const selectedSeats = document.querySelectorAll(".row .seat.selected");
     selectedSeats.forEach(seat => {
