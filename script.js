@@ -1,39 +1,31 @@
-const container = document.querySelector(".container"); // if there were multiple containers it would only select the first one
-const seats = document.querySelectorAll(".row .seat:not(.occupied)"); // puts things into a node list which is similar to an array and we can run methods on it as if it were an array
+const container = document.querySelector(".container");
+const seats = document.querySelectorAll(".row .seat:not(.occupied)");
 const count = document.getElementById("count");
 const total = document.getElementById("total");
 const movieSelect = document.getElementById("movie");
+const confirmBtn = document.getElementById("confirmBtn");
+const codeInput = document.getElementById("code");
+const nameInput = document.getElementById("name");
 
 populateUI();
 
-let ticketPrice = +movieSelect.value; // + has similar function to parseInt
+let ticketPrice = +movieSelect.value;
 
-// Save selected movie index and price
 function setMovieData(movieIndex, moviePrice) {
   localStorage.setItem("selectedMovieIndex", movieIndex);
   localStorage.setItem("selectedMoviePrice", moviePrice);
 }
 
-// Update total and count
 function updateSelectedCount() {
   const selectedSeats = document.querySelectorAll(".row .seat.selected");
-
-  // Copy selected seats into array
-  // Map through array
-  // Return a new array of indexes
-
-  // spread operator copies the elements/values of an array rather than copying the actual array
   const seatsIndex = [...selectedSeats].map(seat => [...seats].indexOf(seat));
-
   localStorage.setItem("selectedSeats", JSON.stringify(seatsIndex));
 
-  const selectedSeatsCount = selectedSeats.length; // length is a property that gets the number of elements in an array, or node list!
-  console.log(selectedSeatsCount);
+  const selectedSeatsCount = selectedSeats.length;
   count.innerText = selectedSeatsCount;
   total.innerText = selectedSeatsCount * ticketPrice;
 }
 
-// Get data from local storage and populate UI
 function populateUI() {
   const selectedSeats = JSON.parse(localStorage.getItem("selectedSeats"));
   if (selectedSeats !== null && selectedSeats.length > 0) {
@@ -49,25 +41,52 @@ function populateUI() {
   }
 }
 
-// Movie select event
 movieSelect.addEventListener("change", e => {
   ticketPrice = +e.target.value;
   setMovieData(e.target.selectedIndex, e.target.value);
-
   updateSelectedCount();
 });
 
-// registers 'click' only on seats that are unoccupied
 container.addEventListener("click", e => {
   if (
     e.target.classList.contains("seat") &&
     !e.target.classList.contains("occupied")
   ) {
     e.target.classList.toggle("selected");
-
     updateSelectedCount();
   }
 });
 
-// Initial count and total set
-updateSelectedCount();
+confirmBtn.addEventListener("click", () => {
+  const enteredCode = codeInput.value.trim();
+  const enteredName = nameInput.value.trim();
+
+  if (isValidCode(enteredCode)) {
+    const selectedSeats = document.querySelectorAll(".row .seat.selected");
+
+    if (selectedSeats.length > 0) {
+      const selectedSeat = selectedSeats[0];
+      selectedSeat.classList.remove("selected", "occupied");
+      selectedSeat.innerText = enteredName;
+
+      disableCode(enteredCode);
+
+      updateSelectedCount();
+    } else {
+      alert("Please select a seat before confirming.");
+    }
+  } else {
+    alert("Invalid code. Please enter a valid code.");
+  }
+});
+
+function isValidCode(enteredCode) {
+  // Implement your validation logic here
+  // For example, check if the entered code is in a predefined list of valid codes
+  return true; // Replace with your validation
+}
+
+function disableCode(enteredCode) {
+  // Implement your logic to disable the code
+  // For example, remove the code from the list of valid codes
+}
