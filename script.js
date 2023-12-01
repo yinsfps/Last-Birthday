@@ -8,7 +8,6 @@ const nameInput = document.getElementById("name");
 const confirmBtn = document.getElementById("confirmBtn");
 
 const validCodes = ['asbx', 'yinss', 'notu']; // Add your actual codes here
-const usedCodesMap = new Map(); // Map to track used codes and associated names
 
 populateUI();
 
@@ -45,8 +44,12 @@ function populateUI() {
   }
 }
 
-function markCodeAsUsed(enteredCode, enteredName) {
-  usedCodesMap.set(enteredCode, enteredName);
+function markCodeAsUsed(enteredCode) {
+  const usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
+  if (!usedCodes.includes(enteredCode)) {
+    usedCodes.push(enteredCode);
+    localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
+  }
 }
 
 movieSelect.addEventListener("change", e => {
@@ -68,13 +71,14 @@ container.addEventListener("click", e => {
 });
 
 confirmBtn.addEventListener("click", () => {
-  const enteredCode = codeInput.value.trim().toLowerCase();
+  const enteredCode = codeInput.value.toUpperCase();
   const enteredName = nameInput.value;
 
   if (validCodes.includes(enteredCode)) {
-    // Code is valid
-    if (!usedCodesMap.has(enteredCode)) {
-      // Code has not been used before
+    const usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
+
+    if (!usedCodes.includes(enteredCode)) {
+      // Code is valid and not used, proceed with seat selection logic
       const selectedSeats = document.querySelectorAll(".row .seat.selected");
       selectedSeats.forEach(seat => {
         seat.classList.remove("selected");
@@ -82,11 +86,11 @@ confirmBtn.addEventListener("click", () => {
         seat.innerHTML = `<div class="tooltip">${enteredName}</div>`;
       });
 
-      markCodeAsUsed(enteredCode, enteredName);
+      markCodeAsUsed(enteredCode);
       updateSelectedCount();
       alert('Ticket confirmed!');
     } else {
-      alert('This code has already been used. Please enter a new code.');
+      alert('Code already used. Please enter a new code.');
     }
   } else {
     alert('Invalid code. Please enter a valid code.');
