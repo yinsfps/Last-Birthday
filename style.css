@@ -1,23 +1,15 @@
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap");
-
-/* remove any unnecessary width */
-* {
-  box-sizing: border-box;
-}
-
 body {
   background-color: #242333;
   color: #fff;
-  display: flex; /* this helps prep to display everything equally horizontally and vertically */
-  flex-direction: column; /* otherwise it automatically displays as a row */
-  align-items: center; /* this is horizontal */
-  justify-content: center; /* this is vertical */
-  height: 100vh; /* final move to truly center content */
   font-family: "Lato", sans-serif;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 
-/* movie container to make it look the same on all devices and browsers */
 .movie-container {
   margin: 20px 0;
 }
@@ -27,15 +19,13 @@ body {
   border: 0;
   border-radius: 5px;
   font-size: 14px;
-  margin-left: 10px; /* create space between text and drop down */
-  padding: 5px 15px 5px 15px; /* top right bottom left */
-  /* following three affect how text lies in drop down box */
+  margin-left: 10px;
+  padding: 5px 15px;
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
 }
 
-/* add a 3D effect */
 .container {
   perspective: 1000px;
   margin-bottom: 30px;
@@ -78,7 +68,6 @@ body {
   justify-content: space-between;
 }
 
-/* includes seat and the caption */
 .showcase li {
   display: flex;
   align-items: center;
@@ -89,7 +78,7 @@ body {
 .showcase li small {
   margin-left: 2px;
 }
-/* to display seats on display horizontally */
+
 .row {
   display: flex;
 }
@@ -107,7 +96,6 @@ p.text {
   margin: 5px 0;
 }
 
-/* color of quantity and cost text */
 p.text span {
   color: #6feaf6;
 }
