@@ -1,34 +1,42 @@
-const container = document.querySelector(".container"); // if there were multiple containers it would only select the first one
-const seats = document.querySelectorAll(".row .seat:not(.occupied)"); // puts things into a node list which is similar to an array and we can run methods on it as if it were an array
+const container = document.querySelector(".container");
+const seats = document.querySelectorAll(".row .seat:not(.occupied)");
 const count = document.getElementById("count");
 const total = document.getElementById("total");
 const movieSelect = document.getElementById("movie");
+const codeInput = document.getElementById("code");
+const confirmButton = document.getElementById("confirm");
+const nameInput = document.getElementById("name");
 
 populateUI();
 
-let ticketPrice = +movieSelect.value; // + has similar function to parseInt
+let ticketPrice = +movieSelect.value;
+let unusedCodes = []; // Array to store unused codes
 
-// Save selected movie index and price
-function setMovieData(movieIndex, moviePrice) {
+// Populate the unused codes array (you need to populate this array with the codes you generate)
+// Example: unusedCodes = ["ABC123", "DEF456", "GHI789"];
+
+// Function to update the unused codes list
+function updateUnusedCodes(usedCode) {
+  unusedCodes = unusedCodes.filter(code => code !== usedCode);
+  // Update the UI or perform any other necessary actions with the updated unused codes
+}
+
+// Save selected movie index, price, and name
+function setMovieData(movieIndex, moviePrice, name) {
   localStorage.setItem("selectedMovieIndex", movieIndex);
   localStorage.setItem("selectedMoviePrice", moviePrice);
+  localStorage.setItem("selectedName", name);
 }
 
 // Update total and count
 function updateSelectedCount() {
   const selectedSeats = document.querySelectorAll(".row .seat.selected");
 
-  // Copy selected seats into array
-  // Map through array
-  // Return a new array of indexes
-
-  // spread operator copies the elements/values of an array rather than copying the actual array
   const seatsIndex = [...selectedSeats].map(seat => [...seats].indexOf(seat));
 
   localStorage.setItem("selectedSeats", JSON.stringify(seatsIndex));
 
-  const selectedSeatsCount = selectedSeats.length; // length is a property that gets the number of elements in an array, or node list!
-  console.log(selectedSeatsCount);
+  const selectedSeatsCount = selectedSeats.length;
   count.innerText = selectedSeatsCount;
   total.innerText = selectedSeatsCount * ticketPrice;
 }
@@ -52,12 +60,46 @@ function populateUI() {
 // Movie select event
 movieSelect.addEventListener("change", e => {
   ticketPrice = +e.target.value;
-  setMovieData(e.target.selectedIndex, e.target.value);
+  setMovieData(e.target.selectedIndex, e.target.value, nameInput.value);
 
   updateSelectedCount();
 });
 
-// registers 'click' only on seats that are unoccupied
+// Confirm button click event
+confirmButton.addEventListener("click", () => {
+  const selectedSeats = document.querySelectorAll(".row .seat.selected");
+
+  if (selectedSeats.length === 1) {
+    const seatNumber = [...seats].indexOf(selectedSeats[0]);
+    const code = codeInput.value;
+    const name = nameInput.value;
+
+    // Check if the code is valid and unused
+    if (unusedCodes.includes(code)) {
+      // Update the unused codes list
+      updateUnusedCodes(code);
+
+      // Save seat data and name
+      localStorage.setItem("confirmedSeatNumber", seatNumber);
+      localStorage.setItem("confirmedName", name);
+
+      // Update the UI or perform any other necessary actions
+      alert(`Seat ${seatNumber + 1} confirmed for ${name}!`);
+
+      // Reset the code input field
+      codeInput.value = "";
+
+      // Update the selected count
+      updateSelectedCount();
+    } else {
+      alert("Invalid or already used code. Please try again.");
+    }
+  } else {
+    alert("Please select a single seat to confirm.");
+  }
+});
+
+// Seat click event
 container.addEventListener("click", e => {
   if (
     e.target.classList.contains("seat") &&
