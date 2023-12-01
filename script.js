@@ -3,9 +3,10 @@ const seats = document.querySelectorAll(".row .seat:not(.occupied)");
 const count = document.getElementById("count");
 const total = document.getElementById("total");
 const movieSelect = document.getElementById("movie");
-const confirmBtn = document.getElementById("confirmBtn");
 const codeInput = document.getElementById("code");
 const nameInput = document.getElementById("name");
+const confirmBtn = document.getElementById("confirmBtn");
+const userSelectedSeatRow = document.getElementById("user-selected-seat-row");
 
 populateUI();
 
@@ -18,7 +19,9 @@ function setMovieData(movieIndex, moviePrice) {
 
 function updateSelectedCount() {
   const selectedSeats = document.querySelectorAll(".row .seat.selected");
+
   const seatsIndex = [...selectedSeats].map(seat => [...seats].indexOf(seat));
+
   localStorage.setItem("selectedSeats", JSON.stringify(seatsIndex));
 
   const selectedSeatsCount = selectedSeats.length;
@@ -44,6 +47,7 @@ function populateUI() {
 movieSelect.addEventListener("change", e => {
   ticketPrice = +e.target.value;
   setMovieData(e.target.selectedIndex, e.target.value);
+
   updateSelectedCount();
 });
 
@@ -53,6 +57,7 @@ container.addEventListener("click", e => {
     !e.target.classList.contains("occupied")
   ) {
     e.target.classList.toggle("selected");
+
     updateSelectedCount();
   }
 });
@@ -61,32 +66,23 @@ confirmBtn.addEventListener("click", () => {
   const enteredCode = codeInput.value.trim();
   const enteredName = nameInput.value.trim();
 
-  if (isValidCode(enteredCode)) {
-    const selectedSeats = document.querySelectorAll(".row .seat.selected");
+  if (enteredCode && enteredName) {
+    const selectedSeats = JSON.parse(localStorage.getItem("selectedSeats")) || [];
+    
+    if (enteredCode === 'YOUR_CODE') {
+      const selectedSeatsDisplay = document.createElement("div");
+      selectedSeatsDisplay.textContent = `${enteredName}'s Seat: ${selectedSeats.join(', ')}`;
+      userSelectedSeatRow.appendChild(selectedSeatsDisplay);
 
-    if (selectedSeats.length > 0) {
-      const selectedSeat = selectedSeats[0];
-      selectedSeat.classList.remove("selected", "occupied");
-      selectedSeat.innerText = enteredName;
-
-      disableCode(enteredCode);
-
-      updateSelectedCount();
+      codeInput.value = '';
+      nameInput.value = '';
+      localStorage.removeItem("selectedSeats");
     } else {
-      alert("Please select a seat before confirming.");
+      alert("Invalid code. Please try again.");
     }
   } else {
-    alert("Invalid code. Please enter a valid code.");
+    alert("Please enter a valid code and name.");
   }
 });
 
-function isValidCode(enteredCode) {
-  // Implement your validation logic here
-  // For example, check if the entered code is in a predefined list of valid codes
-  return true; // Replace with your validation
-}
-
-function disableCode(enteredCode) {
-  // Implement your logic to disable the code
-  // For example, remove the code from the list of valid codes
-}
+updateSelectedCount();
