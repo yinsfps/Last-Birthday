@@ -7,7 +7,7 @@ const codeInput = document.getElementById("code");
 const nameInput = document.getElementById("name");
 const confirmBtn = document.getElementById("confirmBtn");
 
-const validCodes = ['asbx', 'yinss', 'notu']; // Add your actual codes here
+const validCodes = ['asddd', 'yis', 'nos']; // Add your actual codes here
 
 populateUI();
 
@@ -45,11 +45,14 @@ function populateUI() {
 }
 
 function markCodeAsUsed(enteredCode) {
-  const usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
-  if (!usedCodes.includes(enteredCode)) {
-    usedCodes.push(enteredCode);
-    localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
+  const enteredCodeIndex = validCodes.indexOf(enteredCode);
+  if (enteredCodeIndex !== -1) {
+    validCodes.splice(enteredCodeIndex, 1); // Remove the used code
   }
+}
+
+function isCodeValid(enteredCode) {
+  return validCodes.includes(enteredCode);
 }
 
 movieSelect.addEventListener("change", e => {
@@ -71,31 +74,23 @@ container.addEventListener("click", e => {
 });
 
 confirmBtn.addEventListener("click", () => {
-  const enteredCode = codeInput.value.toUpperCase();
+  const enteredCode = codeInput.value.toLowerCase();
   const enteredName = nameInput.value;
 
-  if (validCodes.includes(enteredCode)) {
-    const usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
+  if (isCodeValid(enteredCode)) {
+    // Code is valid, proceed with seat selection logic
+    const selectedSeats = document.querySelectorAll(".row .seat.selected");
+    selectedSeats.forEach(seat => {
+      seat.classList.remove("selected");
+      seat.classList.add("occupied");
+      seat.innerHTML = `<div class="tooltip">${enteredName}</div>`;
+    });
 
-    if (!usedCodes.includes(enteredCode)) {
-      // Code is valid and not used, proceed with seat selection logic
-      const selectedSeats = document.querySelectorAll(".row .seat.selected");
-      selectedSeats.forEach(seat => {
-        seat.classList.remove("selected");
-        seat.classList.add("occupied");
-        seat.innerHTML = `<div class="tooltip">${enteredName}</div>`;
-      });
-
-      markCodeAsUsed(enteredCode);
-      updateSelectedCount();
-      alert('Ticket confirmed!');
-    } else {
-      alert('Code already used. Please enter a new code.');
-    }
+    markCodeAsUsed(enteredCode);
+    updateSelectedCount();
+    alert('Ticket confirmed!');
   } else {
     alert('Invalid code. Please enter a valid code.');
   }
-  codeInput.value = ''; // Clear the code input after confirmation
 });
 
-updateSelectedCount();
